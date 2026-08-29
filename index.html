@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exodafy — Reimbursement Management, Reimagined</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0d0a1e;
+      --violet:  #7c3aed;
+      --violet2: #6d28d9;
+      --lavender:#ede9fe;
+      --cyan:    #06b6d4;
+      --white:   #ffffff;
+      --muted:   #64748b;
+      --card:    #f8f7ff;
+      --border:  #e5e0fa;
+      --green:   #10b981;
+      --amber:   #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--ink);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem 2rem;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800; font-size: 1.4rem;
+      color: var(--violet);
+      letter-spacing: -0.03em;
+      display: flex; align-items: center; gap: 0.4rem;
+    }
+    .nav-logo span { color: var(--ink); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--muted);
+      font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--violet); }
+    .nav-cta {
+      display: flex; gap: 0.75rem;
+    }
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      padding: 0.6rem 1.25rem; border-radius: 10px;
+      font-size: 0.9rem; font-weight: 600;
+      cursor: pointer; text-decoration: none;
+      border: none; transition: all 0.2s;
+    }
+    .btn-ghost {
+      background: transparent; color: var(--violet);
+      border: 1.5px solid var(--violet);
+    }
+    .btn-ghost:hover { background: var(--lavender); }
+    .btn-primary {
+      background: var(--violet); color: var(--white);
+    }
+    .btn-primary:hover { background: var(--violet2); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,58,237,0.3); }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      padding: 8rem 2rem 5rem;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #faf8ff 0%, #f0ebff 50%, #e8f4ff 100%);
+    }
+    .hero-blob {
+      position: absolute; border-radius: 50%;
+      filter: blur(80px); pointer-events: none;
+    }
+    .hero-blob-1 {
+      width: 600px; height: 600px;
+      background: rgba(124,58,237,0.12);
+      top: -100px; right: -100px;
+      animation: float1 8s ease-in-out infinite;
+    }
+    .hero-blob-2 {
+      width: 400px; height: 400px;
+      background: rgba(6,182,212,0.1);
+      bottom: -50px; left: -50px;
+      animation: float2 10s ease-in-out infinite;
+    }
+    @keyframes float1 { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-30px) scale(1.05)} }
+    @keyframes float2 { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(20px) scale(0.95)} }
+
+    .hero-inner {
+      max-width: 820px; text-align: center; position: relative; z-index: 2;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: var(--lavender); color: var(--violet);
+      border: 1px solid rgba(124,58,237,0.2);
+      padding: 0.35rem 1rem; border-radius: 999px;
+      font-size: 0.8rem; font-weight: 600; margin-bottom: 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .hero-badge::before { content: '●'; color: var(--green); }
+    .hero-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(2.5rem, 6vw, 4.2rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -0.04em; margin-bottom: 1.25rem;
+    }
+    .hero-title .accent {
+      background: linear-gradient(135deg, var(--violet), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted);
+      max-width: 540px; margin: 0 auto 2.5rem;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+      margin-bottom: 3.5rem;
+    }
+    .btn-hero {
+      padding: 0.85rem 2rem; font-size: 1rem; border-radius: 12px;
+    }
+    .hero-note {
+      font-size: 0.82rem; color: var(--muted);
+    }
+    .hero-note strong { color: var(--green); }
+
+    .hero-stats {
+      display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap;
+      margin-top: 2rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Sora', sans-serif;
+      font-size: 1.8rem; font-weight: 800;
+      color: var(--violet); line-height: 1;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* ── SECTION WRAPPER ── */
+    section { padding: 5rem 2rem; }
+    .section-inner { max-width: 1100px; margin: 0 auto; }
+    .section-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--violet); letter-spacing: 0.1em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: 'Sora', sans-serif;
+      font-size: clamp(1.75rem, 4vw, 2.5rem);
+      font-weight: 700; letter-spacing: -0.03em;
+      line-height: 1.2; margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--muted); font-size: 1rem;
+      max-width: 560px; line-height: 1.7;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--card); }
+    .steps {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 2rem; margin-top: 3rem;
+    }
+    .step-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 16px; padding: 1.75rem;
+      position: relative; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .step-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(124,58,237,0.1); }
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--violet); margin-bottom: 1rem;
+      background: var(--lavender); display: inline-block;
+      padding: 0.2rem 0.6rem; border-radius: 6px;
+    }
+    .step-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+    .step-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem;
+    }
+    .step-desc { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem; margin-top: 3rem;
+    }
+    .feature-card {
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 1.75rem; transition: all 0.2s;
+      background: var(--white);
+    }
+    .feature-card:hover {
+      border-color: var(--violet);
+      box-shadow: 0 0 0 3px rgba(124,58,237,0.08);
+      transform: translateY(-2px);
+    }
+    .feature-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: var(--lavender); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 1rem;
+    }
+    .feature-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1rem; margin-bottom: 0.4rem;
+    }
+    .feature-desc { font-size: 0.87rem; color: var(--muted); line-height: 1.6; }
+    .feature-tag {
+      display: inline-block; margin-top: 0.75rem;
+      font-size: 0.72rem; font-weight: 600;
+      padding: 0.2rem 0.6rem; border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .tag-web { background: #eff6ff; color: #2563eb; }
+    .tag-mobile { background: #f0fdf4; color: #16a34a; }
+    .tag-whatsapp { background: #f0fdf4; color: #16a34a; }
+    .tag-ai { background: #fdf4ff; color: #9333ea; }
+
+    /* ── VIDEO DEMO ── */
+    .demo { background: var(--ink); color: var(--white); }
+    .demo .section-tag { color: var(--cyan); }
+    .demo .section-title { color: var(--white); }
+    .demo .section-sub { color: rgba(255,255,255,0.6); }
+    .demo-frame {
+      margin-top: 3rem; border-radius: 20px;
+      overflow: hidden; border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.05);
+      aspect-ratio: 16/9;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      backdrop-filter: blur(10px);
+    }
+    .demo-play {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: var(--violet); display: flex;
+      align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 0 0 20px rgba(124,58,237,0.15);
+    }
+    .demo-play:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 30px rgba(124,58,237,0.1);
+    }
+    .demo-play svg { width: 32px; fill: white; margin-left: 4px; }
+    .demo-label {
+      position: absolute; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+      font-size: 0.85rem; color: rgba(255,255,255,0.5);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .demo-features {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem; margin-top: 2rem;
+    }
+    .demo-feat {
+      padding: 1rem 1.25rem; border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: center; gap: 0.75rem;
+    }
+    .demo-feat-icon { font-size: 1.25rem; }
+    .demo-feat-text { font-size: 0.88rem; color: rgba(255,255,255,0.7); }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem; margin-top: 3rem; align-items: start;
+    }
+    .price-card {
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 2rem; background: var(--white);
+      transition: all 0.2s;
+    }
+    .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(124,58,237,0.12); }
+    .price-card.featured {
+      border-color: var(--violet);
+      background: linear-gradient(135deg, #faf8ff, #f5f0ff);
+      box-shadow: 0 8px 32px rgba(124,58,237,0.15);
+    }
+    .price-badge {
+      display: inline-block; background: var(--violet); color: var(--white);
+      font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem;
+      border-radius: 6px; margin-bottom: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .price-plan {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.1rem; margin-bottom: 0.5rem;
+    }
+    .price-amount {
+      font-family: 'Sora', sans-serif;
+      font-size: 2.5rem; font-weight: 800;
+      letter-spacing: -0.04em; line-height: 1;
+      color: var(--violet);
+    }
+    .price-amount span { font-size: 1rem; font-weight: 500; color: var(--muted); }
+    .price-desc { font-size: 0.85rem; color: var(--muted); margin: 0.75rem 0 1.5rem; line-height: 1.5; }
+    .price-features { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1.75rem; }
+    .price-features li {
+      display: flex; align-items: center; gap: 0.6rem;
+      font-size: 0.87rem; color: var(--ink);
+    }
+    .price-features li::before {
+      content: '✓'; color: var(--green); font-weight: 700;
+      font-size: 0.9rem; flex-shrink: 0;
+    }
+    .price-features li.dim { color: var(--muted); }
+    .price-features li.dim::before { color: var(--border); }
+    .btn-plan {
+      width: 100%; text-align: center;
+      padding: 0.75rem; border-radius: 12px;
+      font-weight: 600; font-size: 0.95rem;
+    }
+    .trial-note {
+      text-align: center; margin-top: 1.5rem;
+      font-size: 0.85rem; color: var(--muted);
+    }
+    .trial-note strong { color: var(--violet); }
+
+    /* ── CTA ── */
+    .cta-section {
+      background: linear-gradient(135deg, var(--violet), #4f46e5);
+      color: var(--white);
+    }
+    .cta-inner {
+      max-width: 640px; margin: 0 auto; text-align: center;
+    }
+    .cta-inner .section-tag { color: rgba(255,255,255,0.6); }
+    .cta-inner .section-title { color: var(--white); margin-bottom: 1rem; }
+    .cta-inner .section-sub { color: rgba(255,255,255,0.7); margin: 0 auto 2rem; }
+    .cta-form {
+      display: flex; gap: 0.75rem; flex-wrap: wrap; justify-content: center;
+    }
+    .cta-input {
+      flex: 1; min-width: 220px; padding: 0.8rem 1.25rem;
+      border-radius: 12px; border: none;
+      background: rgba(255,255,255,0.15);
+      color: var(--white); font-size: 0.95rem;
+      backdrop-filter: blur(10px);
+      outline: none;
+    }
+    .cta-input::placeholder { color: rgba(255,255,255,0.5); }
+    .cta-input:focus { background: rgba(255,255,255,0.2); }
+    .btn-cta {
+      background: var(--white); color: var(--violet);
+      padding: 0.8rem 1.75rem; font-weight: 700;
+      border-radius: 12px; border: none; cursor: pointer;
+      font-size: 0.95rem; transition: all 0.2s; white-space: nowrap;
+    }
+    .btn-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+    .cta-sub-note { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin-top: 1rem; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo {
+      font-family: 'Sora', sans-serif; font-weight: 800;
+      font-size: 1.1rem; color: var(--violet);
+    }
+    .footer-copy { font-size: 0.82rem; color: var(--muted); }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.82rem; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--violet); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav { padding: 1rem; }
+      .nav-links { display: none; }
+      .hero { padding: 6rem 1.25rem 3rem; }
+      .hero-stats { gap: 1.5rem; }
+      section { padding: 3.5rem 1.25rem; }
+      footer { flex-direction: column; text-align: center; }
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Exodafy<span>.</span></div>
+  <ul class="nav-links">
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#demo">Demo</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+  </ul>
+  <div class="nav-cta">
+    <a href="#pricing" class="btn btn-ghost">Sign in</a>
+    <a href="#cta" class="btn btn-primary">Start free trial</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-inner fade-in">
+    <div class="hero-badge">Now available — Multi-company SaaS</div>
+    <h1 class="hero-title">
+      Expense claims that<br/>
+      <span class="accent">actually get paid.</span>
+    </h1>
+    <p class="hero-sub">
+      Exodafy replaces your Excel sheets and email chains with a
+      structured, multi-channel reimbursement platform — with approval
+      workflows, WhatsApp integration, and offline mobile access.
+    </p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn btn-primary btn-hero">Start 14-day free trial</a>
+      <a href="#demo" class="btn btn-ghost btn-hero">Watch demo ↓</a>
+    </div>
+    <p class="hero-note"><strong>No credit card required.</strong> Free for up to 10 employees.</p>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">Channels — Web, Mobile, WhatsApp</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">14</div>
+        <div class="stat-label">Days free trial, no card</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Workflow stages configurable</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-tag">How it works</div>
+      <h2 class="section-title">From expense to payment<br/>in four steps.</h2>
+      <p class="section-sub">No manual follow-ups. No lost receipts. No spreadsheets to reconcile.</p>
+    </div>
+    <div class="steps">
+      <div class="step-card fade-in">
+        <div class="step-num">01</div>
+        <div class="step-icon">📝</div>
+        <div class="step-title">Employee submits a claim</div>
+        <p class="step-desc">Via web, mobile app, or WhatsApp. Attach receipts, enter expense details, and submit — online or offline.</p>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-num">02</div>
+        <div class="step-icon">🔀</div>
+        <div class="step-title">Workflow routes automatically</div>
+        <p class="step-desc">Claims are matched to the right approval workflow — by expense type, amount range, or department.</p>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-num">03</div>
+        <div class="step-icon">✅</div>
+        <div class="step-title">Approvers act in one tap</div>
+        <p class="step-desc">Line manager, Finance, HR — each approver gets notified and can approve, reject, or return with comments.</p>
+      </div>
+      <div class="step-card fade-in">
+        <div class="step-num">04</div>
+        <div class="step-icon">💸</div>
+        <div class="step-title">Finance verifies and pays</div>
+        <p class="step-desc">Finance reviews the verified amount, processes payment, and the employee is notified instantly.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-tag">Platform features</div>
+      <h2 class="section-title">Everything your team needs.<br/>Nothing they don't.</h2>
+      <p class="section-sub">Built for real enterprise operations — not a demo product.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-in">
+        <div class="feature-icon">⚙️</div>
+        <div class="feature-title">Multi-stage Approval Workflows</div>
+        <p class="feature-desc">Configure approval chains by expense type, amount range, department, or company. Supports Line Manager, Role, Specific User, and Approval Group types.</p>
+        <span class="feature-tag tag-web">Web</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📍</div>
+        <div class="feature-title">GPS Mileage Tracking</div>
+        <p class="feature-desc">Employees pick From/To on a map. Distance is calculated via OSRM routing. Amount auto-fills based on your company's rate per km.</p>
+        <span class="feature-tag tag-mobile">Mobile</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">💬</div>
+        <div class="feature-title">WhatsApp Bot Integration</div>
+        <p class="feature-desc">Employees submit claims, check status, and get approvals — all from WhatsApp. No app download needed.</p>
+        <span class="feature-tag tag-whatsapp">WhatsApp</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🤖</div>
+        <div class="feature-title">AI Receipt Scanning</div>
+        <p class="feature-desc">Send a photo of a receipt on WhatsApp. Claude AI extracts the amount, date, vendor, and category automatically.</p>
+        <span class="feature-tag tag-ai">AI-powered</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📵</div>
+        <div class="feature-title">Offline Mobile Mode</div>
+        <p class="feature-desc">Field employees can create claims without internet. Claims sync automatically when connectivity returns — attachments included.</p>
+        <span class="feature-tag tag-mobile">Mobile</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🎙️</div>
+        <div class="feature-title">Voice Input</div>
+        <p class="feature-desc">Speak to fill claim fields hands-free. Supports Bangla and English on Android. Perfect for field staff entering data on the go.</p>
+        <span class="feature-tag tag-mobile">Mobile</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">📊</div>
+        <div class="feature-title">Reports & Analytics</div>
+        <p class="feature-desc">Manhour Reports, Employee Timesheet, Expense Summary — all filterable by department, project, employee, and date range.</p>
+        <span class="feature-tag tag-web">Web</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🏢</div>
+        <div class="feature-title">Multi-Company SaaS</div>
+        <p class="feature-desc">Each company gets a fully isolated environment. Data is schema-separated at the database level — not just filtered rows.</p>
+        <span class="feature-tag tag-web">Enterprise</span>
+      </div>
+      <div class="feature-card fade-in">
+        <div class="feature-icon">🔔</div>
+        <div class="feature-title">Real-time Notifications</div>
+        <p class="feature-desc">In-app, email, FCM push, and WhatsApp notifications at every stage of the claim lifecycle. Configurable per workflow step.</p>
+        <span class="feature-tag tag-web">All channels</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO VIDEO -->
+<section class="demo" id="demo">
+  <div class="section-inner">
+    <div class="fade-in">
+      <div class="section-tag">Product demo</div>
+      <h2 class="section-title">See Exodafy in action.</h2>
+      <p class="section-sub">Watch how an employee submits a claim in under 60 seconds — on mobile, with an attachment, offline.</p>
+    </div>
+    <div class="demo-frame fade-in">
+      <div class="demo-play" onclick="alert('Demo video coming soon! Contact us for a live walkthrough.')">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="demo-label">Exodafy Product Demo · 3 min</div>
+    </div>
+    <div class="demo-features fade-in">
+      <div class="demo-feat">
+        <div class="demo-feat-icon">📱</div>
+        <div class="demo-feat-text">Mobile claim creation with GPS mileage</div>
+      </div>
+      <div class="demo-feat">
+        <div class="demo-feat-icon">💬</div>
+        <div class="demo-feat-text">WhatsApp receipt scan & submission</div>
+      </div>
+      <div class="demo-feat">
+        <div class="demo-feat-icon">⚡</div>
+        <div class="demo-feat-text">One-click approval from mobile</div>
+      </div>
+      <div class="demo-feat">
+        <div class="demo-feat-icon">📊</div>
+        <div class="demo-feat-text">Finance dashboard & payment processing</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-inner">
+    <div class="fade-in" style="text-align:center">
+      <div class="section-tag">Pricing</div>
+      <h2 class="section-title">Simple, honest pricing.</h2>
+      <p class="section-sub" style="margin:0 auto 0.5rem">Start free. Scale when you're ready. No surprises.</p>
+    </div>
+    <div class="pricing-grid">
+      <!-- Starter -->
+      <div class="price-card fade-in">
+        <div class="price-plan">Starter</div>
+        <div class="price-amount">$29<span>/month</span></div>
+        <p class="price-desc">For small teams getting expense management under control.</p>
+        <ul class="price-features">
+          <li>Up to 25 employees</li>
+          <li>Web + Mobile access</li>
+          <li>Multi-stage approval workflows</li>
+          <li>Email notifications</li>
+          <li>Basic reports</li>
+          <li class="dim">WhatsApp Bot</li>
+          <li class="dim">GPS Mileage Tracking</li>
+          <li class="dim">Voice Input</li>
+        </ul>
+        <a href="#cta" class="btn btn-ghost btn-plan">Start free trial</a>
+      </div>
+      <!-- Professional -->
+      <div class="price-card featured fade-in">
+        <span class="price-badge">MOST POPULAR</span>
+        <div class="price-plan">Professional</div>
+        <div class="price-amount">$79<span>/month</span></div>
+        <p class="price-desc">Everything your growing organization needs — all channels included.</p>
+        <ul class="price-features">
+          <li>Up to 100 employees</li>
+          <li>Web + Mobile + WhatsApp</li>
+          <li>GPS Mileage Tracking</li>
+          <li>AI Receipt Scanning</li>
+          <li>Voice Input (Android)</li>
+          <li>Offline Mobile Mode</li>
+          <li>Advanced Reports & Export</li>
+          <li>FCM Push Notifications</li>
+        </ul>
+        <a href="#cta" class="btn btn-primary btn-plan">Start free trial</a>
+      </div>
+      <!-- Enterprise -->
+      <div class="price-card fade-in">
+        <div class="price-plan">Enterprise</div>
+        <div class="price-amount">$199<span>/month</span></div>
+        <p class="price-desc">For large teams needing full control, SLA guarantees, and API access.</p>
+        <ul class="price-features">
+          <li>Unlimited employees</li>
+          <li>Everything in Professional</li>
+          <li>Custom workflow rules</li>
+          <li>REST API access</li>
+          <li>Priority support + SLA</li>
+          <li>Dedicated onboarding</li>
+          <li>Custom integrations</li>
+          <li>Audit log export</li>
+        </ul>
+        <a href="mailto:sales@exodafy.com" class="btn btn-ghost btn-plan">Contact sales</a>
+      </div>
+    </div>
+    <p class="trial-note fade-in">All plans include a <strong>14-day free trial</strong> — no credit card required.</p>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-inner fade-in">
+    <div class="section-tag">Get started today</div>
+    <h2 class="section-title">Your company's expense chaos ends here.</h2>
+    <p class="section-sub">Set up in minutes. No IT team needed. Your first 14 days are completely free.</p>
+    <div class="cta-form">
+      <input type="text" class="cta-input" placeholder="your-company (e.g. wyzetech)" id="ctaSlug" />
+      <button class="btn-cta" onclick="handleSignup()">Create account →</button>
+    </div>
+    <p class="cta-sub-note">This becomes your dashboard URL: <strong id="slugPreview">yourcompany.exodafy.com</strong></p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Exodafy.</div>
+  <p class="footer-copy">© 2026 Wyzetech Ltd. All rights reserved.</p>
+  <div class="footer-links">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="mailto:hello@exodafy.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Slug preview
+  const slugInput = document.getElementById('ctaSlug');
+  const slugPreview = document.getElementById('slugPreview');
+  slugInput.addEventListener('input', () => {
+    const val = slugInput.value.toLowerCase().replace(/[^a-z0-9-]/g, '') || 'yourcompany';
+    slugPreview.textContent = `${val}.exodafy.com`;
+  });
+
+  function handleSignup() {
+    const slug = slugInput.value.trim();
+    if (!slug) { alert('Please enter your company ID'); return; }
+    // Redirect to registration page
+    window.location.href = `/register?slug=${encodeURIComponent(slug)}`;
+  }
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

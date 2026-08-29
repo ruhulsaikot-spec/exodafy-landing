@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create your Exodafy account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink:     #0d0a1e;
+      --violet:  #7c3aed;
+      --violet2: #6d28d9;
+      --lavender:#ede9fe;
+      --cyan:    #06b6d4;
+      --white:   #ffffff;
+      --muted:   #64748b;
+      --card:    #f8f7ff;
+      --border:  #e5e0fa;
+      --green:   #10b981;
+      --red:     #ef4444;
+      --amber:   #f59e0b;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #faf8ff 0%, #f0ebff 50%, #e8f4ff 100%);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1.25rem 2rem;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800; font-size: 1.4rem;
+      color: var(--violet); text-decoration: none;
+      letter-spacing: -0.03em;
+    }
+    .nav-logo span { color: var(--ink); }
+    .nav-right {
+      font-size: 0.88rem; color: var(--muted);
+    }
+    .nav-right a { color: var(--violet); text-decoration: none; font-weight: 600; }
+    .nav-right a:hover { text-decoration: underline; }
+
+    /* ── MAIN LAYOUT ── */
+    .main {
+      flex: 1; display: flex;
+      align-items: flex-start; justify-content: center;
+      padding: 3rem 1.5rem 4rem;
+      gap: 4rem;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left-panel {
+      flex: 0 0 340px; padding-top: 1rem;
+      display: none;
+    }
+    @media (min-width: 1024px) { .left-panel { display: block; } }
+
+    .left-brand {
+      font-family: 'Sora', sans-serif;
+      font-weight: 800; font-size: 1.6rem;
+      color: var(--violet); margin-bottom: 0.5rem;
+      letter-spacing: -0.03em;
+    }
+    .left-tagline {
+      font-size: 1rem; color: var(--muted);
+      line-height: 1.6; margin-bottom: 2rem;
+    }
+    .left-features { list-style: none; display: flex; flex-direction: column; gap: 1rem; }
+    .left-feat {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+    }
+    .left-feat-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--lavender); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+    }
+    .left-feat-text strong {
+      display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 0.15rem;
+    }
+    .left-feat-text span { font-size: 0.8rem; color: var(--muted); line-height: 1.5; }
+
+    .left-trial {
+      margin-top: 2.5rem; padding: 1.25rem;
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .left-trial-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.72rem; color: var(--violet);
+      font-weight: 500; margin-bottom: 0.5rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .left-trial-text { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+    .left-trial-text strong { color: var(--ink); }
+
+    /* ── FORM CARD ── */
+    .form-card {
+      width: 100%; max-width: 480px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 2.25rem;
+      box-shadow: 0 8px 40px rgba(124,58,237,0.08);
+    }
+
+    .form-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.5rem;
+      letter-spacing: -0.03em; margin-bottom: 0.4rem;
+    }
+    .form-sub {
+      font-size: 0.87rem; color: var(--muted);
+      margin-bottom: 1.75rem; line-height: 1.5;
+    }
+
+    /* Plan selector */
+    .plan-selector {
+      display: flex; gap: 0.5rem; margin-bottom: 1.5rem;
+    }
+    .plan-opt {
+      flex: 1; padding: 0.6rem 0.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px; cursor: pointer;
+      text-align: center; transition: all 0.15s;
+      background: var(--white);
+    }
+    .plan-opt:hover { border-color: var(--violet); background: var(--lavender); }
+    .plan-opt.active {
+      border-color: var(--violet);
+      background: var(--lavender);
+    }
+    .plan-opt-name {
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--violet); display: block;
+    }
+    .plan-opt-price {
+      font-size: 0.72rem; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Form groups */
+    .form-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-bottom: 0.75rem;
+    }
+    .form-group { margin-bottom: 0.75rem; }
+    .form-label {
+      display: block; font-size: 0.82rem;
+      font-weight: 600; margin-bottom: 0.35rem; color: var(--ink);
+    }
+    .form-label .required { color: var(--violet); margin-left: 2px; }
+
+    .input-wrapper { position: relative; }
+    .form-input {
+      width: 100%; padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.9rem; font-family: 'Inter', sans-serif;
+      color: var(--ink); background: var(--white);
+      outline: none; transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+    .form-input.error { border-color: var(--red); }
+    .form-input.success { border-color: var(--green); }
+
+    /* Slug field with preview */
+    .slug-wrapper {
+      display: flex; align-items: center;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      overflow: hidden; transition: border-color 0.15s;
+      background: var(--white);
+    }
+    .slug-wrapper:focus-within { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+    .slug-wrapper.error { border-color: var(--red); }
+    .slug-wrapper.success { border-color: var(--green); }
+    .slug-prefix {
+      padding: 0.65rem 0.75rem;
+      background: var(--card); color: var(--muted);
+      font-size: 0.82rem; font-family: 'JetBrains Mono', monospace;
+      border-right: 1.5px solid var(--border); white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .slug-input {
+      flex: 1; padding: 0.65rem 0.75rem;
+      border: none; outline: none;
+      font-size: 0.9rem; font-family: 'JetBrains Mono', monospace;
+      color: var(--violet); background: transparent;
+    }
+    .slug-suffix {
+      padding: 0.65rem 0.75rem;
+      color: var(--muted); font-size: 0.82rem;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap; flex-shrink: 0;
+    }
+    .slug-status {
+      position: absolute; right: 0.75rem; top: 50%;
+      transform: translateY(-50%); font-size: 0.85rem;
+    }
+
+    .field-hint {
+      font-size: 0.75rem; color: var(--muted);
+      margin-top: 0.3rem; line-height: 1.4;
+    }
+    .field-error {
+      font-size: 0.75rem; color: var(--red);
+      margin-top: 0.3rem;
+    }
+    .field-success {
+      font-size: 0.75rem; color: var(--green);
+      margin-top: 0.3rem;
+    }
+
+    /* Password strength */
+    .pw-strength {
+      display: flex; gap: 3px; margin-top: 0.4rem;
+    }
+    .pw-bar {
+      height: 3px; flex: 1; border-radius: 2px;
+      background: var(--border); transition: background 0.2s;
+    }
+    .pw-bar.weak { background: var(--red); }
+    .pw-bar.medium { background: var(--amber); }
+    .pw-bar.strong { background: var(--green); }
+
+    /* Country select */
+    .form-select {
+      width: 100%; padding: 0.65rem 0.9rem;
+      border: 1.5px solid var(--border); border-radius: 10px;
+      font-size: 0.9rem; font-family: 'Inter', sans-serif;
+      color: var(--ink); background: var(--white);
+      outline: none; cursor: pointer;
+      transition: border-color 0.15s;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%2364748b' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 0.9rem center;
+    }
+    .form-select:focus { border-color: var(--violet); box-shadow: 0 0 0 3px rgba(124,58,237,0.08); }
+
+    /* Terms */
+    .terms-check {
+      display: flex; align-items: flex-start; gap: 0.6rem;
+      margin: 1rem 0 1.25rem;
+    }
+    .terms-check input { margin-top: 2px; accent-color: var(--violet); flex-shrink: 0; }
+    .terms-check label { font-size: 0.8rem; color: var(--muted); line-height: 1.5; cursor: pointer; }
+    .terms-check a { color: var(--violet); text-decoration: none; }
+    .terms-check a:hover { text-decoration: underline; }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%; padding: 0.85rem;
+      background: var(--violet); color: var(--white);
+      border: none; border-radius: 12px;
+      font-size: 0.95rem; font-weight: 700;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    }
+    .btn-submit:hover:not(:disabled) {
+      background: var(--violet2);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.3);
+    }
+    .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* Divider */
+    .divider {
+      text-align: center; margin: 1.25rem 0;
+      font-size: 0.8rem; color: var(--muted);
+      position: relative;
+    }
+    .divider::before, .divider::after {
+      content: ''; position: absolute;
+      top: 50%; width: calc(50% - 30px);
+      height: 1px; background: var(--border);
+    }
+    .divider::before { left: 0; }
+    .divider::after { right: 0; }
+
+    /* Success state */
+    .success-state {
+      display: none; text-align: center; padding: 2rem 0;
+    }
+    .success-icon {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: #dcfce7; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 2rem; margin: 0 auto 1.25rem;
+    }
+    .success-title {
+      font-family: 'Sora', sans-serif;
+      font-weight: 700; font-size: 1.3rem; margin-bottom: 0.5rem;
+    }
+    .success-sub { font-size: 0.9rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.5rem; }
+    .success-url {
+      background: var(--lavender); border: 1px solid var(--border);
+      border-radius: 10px; padding: 0.75rem 1rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem; color: var(--violet);
+      margin-bottom: 1.25rem; word-break: break-all;
+    }
+    .btn-goto {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.8rem 1.75rem; background: var(--violet);
+      color: var(--white); border-radius: 12px;
+      font-weight: 700; font-size: 0.95rem;
+      text-decoration: none; transition: all 0.2s;
+    }
+    .btn-goto:hover { background: var(--violet2); }
+
+    /* Error banner */
+    .error-banner {
+      display: none; background: #fef2f2;
+      border: 1px solid #fecaca; border-radius: 10px;
+      padding: 0.85rem 1rem; margin-bottom: 1rem;
+      font-size: 0.85rem; color: var(--red);
+      align-items: center; gap: 0.5rem;
+    }
+    .error-banner.visible { display: flex; }
+
+    /* Loading spinner */
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .spinner {
+      width: 18px; height: 18px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      animation: spin 0.7s linear infinite;
+    }
+
+    /* Footer */
+    .page-footer {
+      text-align: center; padding: 1.5rem;
+      font-size: 0.8rem; color: var(--muted);
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,0.6);
+    }
+    .page-footer a { color: var(--violet); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="nav-logo">Exodafy<span>.</span></a>
+  <div class="nav-right">
+    Already have an account? <a href="#">Sign in</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="left-brand">Exodafy.</div>
+    <p class="left-tagline">Expense claims that actually get paid — on web, mobile, and WhatsApp.</p>
+
+    <ul class="left-features">
+      <li class="left-feat">
+        <div class="left-feat-icon">⚙️</div>
+        <div class="left-feat-text">
+          <strong>Multi-stage approvals</strong>
+          <span>Configure workflows by expense type, amount, or department.</span>
+        </div>
+      </li>
+      <li class="left-feat">
+        <div class="left-feat-icon">📵</div>
+        <div class="left-feat-text">
+          <strong>Works offline</strong>
+          <span>Field employees submit claims even without internet. Syncs automatically.</span>
+        </div>
+      </li>
+      <li class="left-feat">
+        <div class="left-feat-icon">💬</div>
+        <div class="left-feat-text">
+          <strong>WhatsApp integration</strong>
+          <span>Submit and approve claims directly from WhatsApp.</span>
+        </div>
+      </li>
+      <li class="left-feat">
+        <div class="left-feat-icon">📍</div>
+        <div class="left-feat-text">
+          <strong>GPS mileage tracking</strong>
+          <span>Auto-calculate transport reimbursement from map-picked locations.</span>
+        </div>
+      </li>
+      <li class="left-feat">
+        <div class="left-feat-icon">🤖</div>
+        <div class="left-feat-text">
+          <strong>AI receipt scanning</strong>
+          <span>Photo a receipt on WhatsApp — Claude AI fills the claim for you.</span>
+        </div>
+      </li>
+    </ul>
+
+    <div class="left-trial">
+      <div class="left-trial-label">Free Trial</div>
+      <p class="left-trial-text">
+        <strong>14 days free</strong> — no credit card required.
+        Cancel anytime. Your data stays yours.
+      </p>
+    </div>
+  </div>
+
+  <!-- FORM CARD -->
+  <div class="form-card">
+    <!-- Form -->
+    <div id="formSection">
+      <h1 class="form-title">Create your account</h1>
+      <p class="form-sub">Set up your company workspace in under 2 minutes.</p>
+
+      <!-- Plan selector -->
+      <div class="plan-selector">
+        <div class="plan-opt active" onclick="selectPlan(this, 'starter')">
+          <span class="plan-opt-name">Starter</span>
+          <span class="plan-opt-price">$29/mo</span>
+        </div>
+        <div class="plan-opt" onclick="selectPlan(this, 'professional')">
+          <span class="plan-opt-name">Professional</span>
+          <span class="plan-opt-price">$79/mo</span>
+        </div>
+        <div class="plan-opt" onclick="selectPlan(this, 'enterprise')">
+          <span class="plan-opt-name">Enterprise</span>
+          <span class="plan-opt-price">$199/mo</span>
+        </div>
+      </div>
+      <input type="hidden" id="selectedPlan" value="starter" />
+
+      <!-- Error banner -->
+      <div class="error-banner" id="errorBanner">
+        <span>⚠️</span>
+        <span id="errorMsg">Something went wrong. Please try again.</span>
+      </div>
+
+      <!-- Company Name -->
+      <div class="form-group">
+        <label class="form-label" for="companyName">
+          Company Name <span class="required">*</span>
+        </label>
+        <input type="text" id="companyName" class="form-input"
+          placeholder="e.g. Wyzetech Ltd" autocomplete="organization" />
+        <div class="field-error" id="companyNameError"></div>
+      </div>
+
+      <!-- Company ID (slug) -->
+      <div class="form-group">
+        <label class="form-label" for="slugInput">
+          Company ID <span class="required">*</span>
+        </label>
+        <div class="slug-wrapper" id="slugWrapper">
+          <div class="slug-prefix">https://</div>
+          <input type="text" id="slugInput" class="slug-input"
+            placeholder="wyzetech" autocomplete="off" />
+          <div class="slug-suffix">.exodafy.com</div>
+        </div>
+        <div class="field-hint">Only lowercase letters, numbers, and hyphens. Min 3 characters.</div>
+        <div class="field-error" id="slugError" style="display:none"></div>
+        <div class="field-success" id="slugSuccess" style="display:none"></div>
+      </div>
+
+      <!-- Name row -->
+      <div class="form-row">
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="firstName">
+            First Name <span class="required">*</span>
+          </label>
+          <input type="text" id="firstName" class="form-input" placeholder="Ruhul" />
+          <div class="field-error" id="firstNameError"></div>
+        </div>
+        <div class="form-group" style="margin-bottom:0">
+          <label class="form-label" for="lastName">Last Name</label>
+          <input type="text" id="lastName" class="form-input" placeholder="Saikot" />
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group" style="margin-top:0.75rem">
+        <label class="form-label" for="email">
+          Work Email <span class="required">*</span>
+        </label>
+        <input type="email" id="email" class="form-input"
+          placeholder="admin@wyzetech.com" autocomplete="email" />
+        <div class="field-error" id="emailError"></div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="password">
+          Password <span class="required">*</span>
+        </label>
+        <input type="password" id="password" class="form-input"
+          placeholder="Min. 8 chars, uppercase, number"
+          oninput="checkPasswordStrength()" />
+        <div class="pw-strength">
+          <div class="pw-bar" id="bar1"></div>
+          <div class="pw-bar" id="bar2"></div>
+          <div class="pw-bar" id="bar3"></div>
+        </div>
+        <div class="field-hint" id="pwHint">Use at least 8 characters with uppercase, lowercase, and a number.</div>
+        <div class="field-error" id="passwordError"></div>
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="form-group">
+        <label class="form-label" for="confirmPassword">
+          Confirm Password <span class="required">*</span>
+        </label>
+        <input type="password" id="confirmPassword" class="form-input"
+          placeholder="Repeat password" />
+        <div class="field-error" id="confirmPasswordError"></div>
+      </div>
+
+      <!-- Country -->
+      <div class="form-group">
+        <label class="form-label" for="country">Country</label>
+        <select id="country" class="form-select">
+          <option value="Bangladesh" selected>🇧🇩 Bangladesh</option>
+          <option value="India">🇮🇳 India</option>
+          <option value="Pakistan">🇵🇰 Pakistan</option>
+          <option value="UAE">🇦🇪 United Arab Emirates</option>
+          <option value="USA">🇺🇸 United States</option>
+          <option value="UK">🇬🇧 United Kingdom</option>
+          <option value="Canada">🇨🇦 Canada</option>
+          <option value="Australia">🇦🇺 Australia</option>
+          <option value="Singapore">🇸🇬 Singapore</option>
+          <option value="Other">🌍 Other</option>
+        </select>
+      </div>
+
+      <!-- Terms -->
+      <div class="terms-check">
+        <input type="checkbox" id="terms" />
+        <label for="terms">
+          I agree to Exodafy's <a href="#">Terms of Service</a> and
+          <a href="#">Privacy Policy</a>. I understand my data is
+          isolated in a dedicated workspace.
+        </label>
+      </div>
+
+      <!-- Submit -->
+      <button class="btn-submit" id="submitBtn" onclick="handleRegister()">
+        <span id="btnText">Create free account →</span>
+        <div class="spinner" id="btnSpinner" style="display:none"></div>
+      </button>
+
+      <div class="divider">14-day free trial · No credit card needed</div>
+
+      <p style="text-align:center; font-size:0.8rem; color:var(--muted)">
+        Already have an account?
+        <a href="#" style="color:var(--violet); font-weight:600; text-decoration:none">Sign in</a>
+      </p>
+    </div>
+
+    <!-- Success State -->
+    <div class="success-state" id="successSection">
+      <div class="success-icon">🎉</div>
+      <div class="success-title">Your workspace is ready!</div>
+      <p class="success-sub">
+        Your Exodafy account has been created. Your 14-day free trial starts now.
+        <br/>Your private dashboard URL is:
+      </p>
+      <div class="success-url" id="successUrl">wyzetech.exodafy.com</div>
+      <a href="#" class="btn-goto" id="dashboardLink">
+        Go to my dashboard →
+      </a>
+      <p style="margin-top:1rem; font-size:0.8rem; color:var(--muted)">
+        We've also sent a welcome email to <strong id="successEmail"></strong>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  © 2026 Wyzetech Ltd · <a href="#">Privacy</a> · <a href="#">Terms</a> · <a href="mailto:hello@exodafy.com">Support</a>
+</div>
+
+<script>
+  // ── Config ──
+  const API_BASE = 'http://localhost:8000/api'; // Change to production URL
+
+  // ── Pre-fill slug from URL param ──
+  const params = new URLSearchParams(window.location.search);
+  const prefillSlug = params.get('slug');
+  if (prefillSlug) {
+    document.getElementById('slugInput').value = prefillSlug;
+    validateSlug(prefillSlug);
+  }
+
+  // ── Plan selection ──
+  let selectedPlan = 'starter';
+  function selectPlan(el, plan) {
+    document.querySelectorAll('.plan-opt').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    selectedPlan = plan;
+  }
+
+  // ── Slug validation (debounced) ──
+  let slugTimer;
+  document.getElementById('slugInput').addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '');
+    e.target.value = val;
+    clearTimeout(slugTimer);
+    hideSlugStatus();
+    if (val.length >= 3) {
+      slugTimer = setTimeout(() => validateSlug(val), 500);
+    }
+  });
+
+  async function validateSlug(slug) {
+    const wrapper = document.getElementById('slugWrapper');
+    const errEl = document.getElementById('slugError');
+    const sucEl = document.getElementById('slugSuccess');
+
+    // Reserved words
+    const reserved = ['www', 'app', 'api', 'admin', 'superadmin', 'mail', 'help', 'support', 'billing', 'dev'];
+    if (reserved.includes(slug)) {
+      wrapper.classList.add('error');
+      errEl.textContent = `"${slug}" is a reserved name. Please choose another.`;
+      errEl.style.display = 'block';
+      sucEl.style.display = 'none';
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API_BASE}/tenants/check-slug/${slug}`);
+      const data = await res.json();
+      if (data.available) {
+        wrapper.classList.remove('error');
+        wrapper.classList.add('success');
+        sucEl.textContent = `✓ "${slug}" is available!`;
+        sucEl.style.display = 'block';
+        errEl.style.display = 'none';
+      } else {
+        wrapper.classList.add('error');
+        wrapper.classList.remove('success');
+        errEl.textContent = `"${slug}" is already taken. Try another.`;
+        errEl.style.display = 'block';
+        sucEl.style.display = 'none';
+      }
+    } catch {
+      // API unavailable — skip check
+      wrapper.classList.remove('error', 'success');
+      hideSlugStatus();
+    }
+  }
+
+  function hideSlugStatus() {
+    document.getElementById('slugError').style.display = 'none';
+    document.getElementById('slugSuccess').style.display = 'none';
+    const w = document.getElementById('slugWrapper');
+    w.classList.remove('error', 'success');
+  }
+
+  // ── Password strength ──
+  function checkPasswordStrength() {
+    const pw = document.getElementById('password').value;
+    const bars = [document.getElementById('bar1'), document.getElementById('bar2'), document.getElementById('bar3')];
+    const hint = document.getElementById('pwHint');
+
+    bars.forEach(b => { b.className = 'pw-bar'; });
+
+    let strength = 0;
+    if (pw.length >= 8) strength++;
+    if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) strength++;
+    if (/\d/.test(pw) || /[^A-Za-z0-9]/.test(pw)) strength++;
+
+    if (strength === 1) {
+      bars[0].classList.add('weak');
+      hint.textContent = 'Weak — add uppercase and numbers.';
+      hint.style.color = 'var(--red)';
+    } else if (strength === 2) {
+      bars[0].classList.add('medium'); bars[1].classList.add('medium');
+      hint.textContent = 'Medium — add a number or symbol.';
+      hint.style.color = 'var(--amber)';
+    } else if (strength === 3) {
+      bars.forEach(b => b.classList.add('strong'));
+      hint.textContent = '✓ Strong password.';
+      hint.style.color = 'var(--green)';
+    } else {
+      hint.textContent = 'Use at least 8 characters with uppercase, lowercase, and a number.';
+      hint.style.color = 'var(--muted)';
+    }
+  }
+
+  // ── Form validation ──
+  function validate() {
+    let ok = true;
+
+    const clearErr = (id) => { document.getElementById(id).textContent = ''; document.getElementById(id.replace('Error','')).classList.remove('error'); };
+    const setErr = (fieldId, errId, msg) => {
+      document.getElementById(errId).textContent = msg;
+      document.getElementById(fieldId).classList.add('error');
+      ok = false;
+    };
+
+    clearErr('companyNameError'); clearErr('firstNameError');
+    clearErr('emailError'); clearErr('passwordError'); clearErr('confirmPasswordError');
+
+    const companyName = document.getElementById('companyName').value.trim();
+    const slug = document.getElementById('slugInput').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
+    const terms = document.getElementById('terms').checked;
+
+    if (!companyName) setErr('companyName', 'companyNameError', 'Company name is required.');
+    if (slug.length < 3) { document.getElementById('slugWrapper').classList.add('error'); document.getElementById('slugError').textContent = 'Company ID must be at least 3 characters.'; document.getElementById('slugError').style.display = 'block'; ok = false; }
+    if (!firstName) setErr('firstName', 'firstNameError', 'First name is required.');
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) setErr('email', 'emailError', 'Please enter a valid email address.');
+    if (password.length < 8) setErr('password', 'passwordError', 'Password must be at least 8 characters.');
+    else if (!/[A-Z]/.test(password)) setErr('password', 'passwordError', 'Password must contain an uppercase letter.');
+    else if (!/\d/.test(password)) setErr('password', 'passwordError', 'Password must contain a number.');
+    if (password !== confirmPassword) setErr('confirmPassword', 'confirmPasswordError', 'Passwords do not match.');
+    if (!terms) { alert('Please accept the Terms of Service to continue.'); ok = false; }
+
+    return ok;
+  }
+
+  // ── Registration ──
+  async function handleRegister() {
+    if (!validate()) return;
+
+    const slug = document.getElementById('slugInput').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const password = document.getElementById('password').value;
+    const country = document.getElementById('country').value;
+    const companyName = document.getElementById('companyName').value.trim();
+
+    // Loading state
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    document.getElementById('btnText').style.display = 'none';
+    document.getElementById('btnSpinner').style.display = 'block';
+    document.getElementById('errorBanner').classList.remove('visible');
+
+    try {
+      const res = await fetch(`${API_BASE}/tenants/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          company_name: companyName,
+          slug: slug,
+          email: email,
+          password: password,
+          country: country,
+          timezone: country === 'Bangladesh' ? 'Asia/Dhaka' : 'UTC',
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.detail || 'Registration failed. Please try again.');
+      }
+
+      // Success!
+      document.getElementById('formSection').style.display = 'none';
+      const successSection = document.getElementById('successSection');
+      successSection.style.display = 'block';
+      document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
+      document.getElementById('successEmail').textContent = email;
+      document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+
+    } catch (err) {
+      document.getElementById('errorMsg').textContent = err.message;
+      document.getElementById('errorBanner').classList.add('visible');
+      btn.disabled = false;
+      document.getElementById('btnText').style.display = 'inline';
+      document.getElementById('btnSpinner').style.display = 'none';
+    }
+  }
+</script>
+</body>
+</html>
