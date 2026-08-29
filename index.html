@@ -704,12 +704,11 @@
     slugPreview.textContent = `${val}.exodafy.com`;
   });
 
-  function handleSignup() {
+function handleSignup() {
     const slug = slugInput.value.trim();
     if (!slug) { alert('Please enter your company ID'); return; }
-    // Redirect to registration page
-    window.location.href = `/register?slug=${encodeURIComponent(slug)}`;
-  }
+    window.location.href = `/register.html?slug=${encodeURIComponent(slug)}`;
+}
 
   // Scroll animations
   const observer = new IntersectionObserver((entries) => {
