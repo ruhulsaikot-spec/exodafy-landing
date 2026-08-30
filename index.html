@@ -289,14 +289,36 @@
 
     /* ── PRICING ── */
     .pricing-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 1.5rem; margin-top: 3rem; align-items: start;
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 3rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 1rem;
+      scrollbar-width: thin;
+      scrollbar-color: #e5e0fa transparent;
+    }
+    .pricing-grid::-webkit-scrollbar {
+      height: 6px;
+    }
+    .pricing-grid::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .pricing-grid::-webkit-scrollbar-thumb {
+      background: #e5e0fa;
+      border-radius: 999px;
+    }
+    .price-card {
+      flex: 0 0 300px;
+      scroll-snap-align: start;
     }
     .price-card {
       border: 1px solid var(--border); border-radius: 20px;
       padding: 2rem; background: var(--white);
       transition: all 0.2s;
+      flex: 0 0 300px;
+      scroll-snap-align: start;
     }
     .price-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(124,58,237,0.12); }
     .price-card.featured {
@@ -612,7 +634,7 @@
       <h2 class="section-title">Simple, honest pricing.</h2>
       <p class="section-sub" style="margin:0 auto 0.5rem">Start free. Scale when you're ready. No surprises.</p>
     </div>
-    <div class="pricing-grid">
+    <div class="pricing-grid" id="pricingGrid">
       <!-- Starter -->
       <div class="price-card fade-in">
         <div class="price-plan">Starter</div>
@@ -709,6 +731,88 @@ function handleSignup() {
     if (!slug) { alert('Please enter your company ID'); return; }
     window.location.href = `/register.html?slug=${encodeURIComponent(slug)}`;
 }
+
+  // Load plans from backend
+  async function loadPlans() {
+    try {
+      const res = await fetch('http://localhost:8000/api/super-admin/plans', {
+        headers: { 'X-Super-Admin-Key': 'exodafy-super-admin-2026' }
+      });
+      const data = await res.json();
+      const plans = (data.plans || []).filter(p => p.is_active && p.slug !== 'trial');
+
+      if (plans.length === 0) return;
+
+      const grid = document.getElementById('pricingGrid');
+      if (!grid) return;
+
+      const POPULAR_SLUG = 'professional';
+
+      grid.innerHTML = plans.map(plan => {
+        const isPopular = plan.slug === POPULAR_SLUG;
+        const features = (plan.features || []).map(f => `<li>${f}</li>`).join('');
+        const maxEmp = plan.max_employees >= 999999 ? 'Unlimited' : `Up to ${plan.max_employees}`;
+
+        return `
+          <div class="price-card fade-in ${isPopular ? 'featured' : ''}">
+            ${isPopular ? '<span class="price-badge">MOST POPULAR</span>' : ''}
+            <div class="price-plan">${plan.name}</div>
+            <div class="price-amount">$${plan.price}<span>/month</span></div>
+            <p class="price-desc">${plan.description || ''}</p>
+            <ul class="price-features">
+              <li>${maxEmp} employees</li>
+              ${features}
+            </ul>
+            ${plan.slug === 'enterprise'
+              ? `<a href="mailto:sales@exodafy.com" class="btn-plan btn btn-ghost">Contact sales</a>`
+              : `<a href="/register.html?plan=${plan.slug}" class="btn-plan btn ${isPopular ? 'btn-primary' : 'btn-ghost'}">Start free trial</a>`
+            }
+          </div>
+        `;
+      }).join('');
+
+      // Re-observe for animations
+      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    } catch (e) {
+      // Keep static pricing if API fails
+      console.log('Using static pricing');
+    }
+  }
+
+  loadPlans();
+
+  // Auto-scroll pricing cards
+  function startPricingAutoScroll() {
+    const grid = document.getElementById('pricingGrid');
+    if (!grid) return;
+
+    let scrolling = true;
+    let direction = 1;
+
+    grid.addEventListener('mouseenter', () => { scrolling = false; });
+    grid.addEventListener('mouseleave', () => { scrolling = true; });
+    grid.addEventListener('touchstart', () => { scrolling = false; });
+    grid.addEventListener('touchend', () => {
+      setTimeout(() => { scrolling = true; }, 2000);
+    });
+
+    setInterval(() => {
+      if (!scrolling) return;
+
+      const maxScroll = grid.scrollWidth - grid.clientWidth;
+
+      if (grid.scrollLeft >= maxScroll - 10) {
+        direction = -1;
+      } else if (grid.scrollLeft <= 10) {
+        direction = 1;
+      }
+
+      grid.scrollBy({ left: direction * 320, behavior: 'smooth' });
+    }, 2500);
+  }
+
+  setTimeout(startPricingAutoScroll, 1500);
 
   // Scroll animations
   const observer = new IntersectionObserver((entries) => {
