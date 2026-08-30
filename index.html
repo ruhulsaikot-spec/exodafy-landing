@@ -739,7 +739,8 @@ function handleSignup() {
     });
   }
 
-  if (checkoutStatus === "success" && tenant) {
+  const paymentDone = urlParams.get("payment_done");
+  if (paymentDone === "1" && tenant) {
     // Payment completed — show success message
     setTimeout(() => {
       alert(`Payment successful! Your ${tenant}.exodafy.com dashboard is ready.`);
