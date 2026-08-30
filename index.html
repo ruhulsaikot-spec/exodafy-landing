@@ -721,9 +721,9 @@ function handleSignup() {
 <script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
 <script>
   // Initialize Paddle
+  Paddle.Environment.set("sandbox");
   Paddle.Initialize({
     token: "test_8b43dca45c2e1822afc549be439",
-    environment: "sandbox",
   });
 
   // Check if redirected from checkout
