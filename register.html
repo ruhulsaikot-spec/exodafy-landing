@@ -443,7 +443,8 @@
       <p class="form-sub">Set up your company workspace in under 2 minutes.</p>
 
       <!-- Plan selector -->
-      <div class="plan-selector">
+      <div class="plan-selector" id="planSelector">
+        <!-- Plans load dynamically from backend -->
         <div class="plan-opt active" onclick="selectPlan(this, 'starter')">
           <span class="plan-opt-name">Starter</span>
           <span class="plan-opt-price">$29/mo</span>
@@ -619,6 +620,45 @@
     document.getElementById('slugInput').value = prefillSlug;
     validateSlug(prefillSlug);
   }
+
+  // Load plans from backend
+  async function loadRegisterPlans() {
+    try {
+      const res = await fetch(`${API_BASE}/super-admin/plans`, {
+        headers: { 'X-Super-Admin-Key': 'exodafy-super-admin-2026' }
+      });
+      const data = await res.json();
+      const plans = (data.plans || []).filter(p => p.is_active && p.slug !== 'trial');
+
+      if (plans.length === 0) return;
+
+      const selector = document.getElementById('planSelector');
+      if (!selector) return;
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const preselectedPlan = urlParams.get('plan') || plans[0].slug;
+
+      selector.innerHTML = plans.map((plan, index) => {
+        const isActive = plan.slug === preselectedPlan || (index === 0 && !urlParams.get('plan'));
+        if (isActive) {
+          selectedPlan = plan.slug;
+          document.getElementById('selectedPlan').value = plan.slug;
+        }
+        return `
+          <div class="plan-opt ${isActive ? 'active' : ''}"
+               onclick="selectPlan(this, '${plan.slug}')">
+            <span class="plan-opt-name">${plan.name}</span>
+            <span class="plan-opt-price">$${plan.price}/mo</span>
+          </div>
+        `;
+      }).join('');
+
+    } catch (e) {
+      console.log('Using static plans');
+    }
+  }
+
+  loadRegisterPlans();
 
   // ── Plan selection ──
   let selectedPlan = 'starter';
