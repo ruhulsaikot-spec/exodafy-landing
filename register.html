@@ -772,13 +772,42 @@
         throw new Error(data.detail || 'Registration failed. Please try again.');
       }
 
-      // Success!
-      document.getElementById('formSection').style.display = 'none';
-      const successSection = document.getElementById('successSection');
-      successSection.style.display = 'block';
-      document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
-      document.getElementById('successEmail').textContent = email;
-      document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+      // Success! Tenant created — now redirect to Paddle checkout
+      const plan = selectedPlan || 'starter';
+
+      // Get checkout URL from backend
+      try {
+        const checkoutRes = await fetch(`${API_BASE}/billing/checkout`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            tenant_slug: slug,
+            plan: plan,
+          }),
+        });
+        const checkoutData = await checkoutRes.json();
+
+        if (checkoutData.checkout_url) {
+          // Redirect to Paddle checkout
+          window.location.href = checkoutData.checkout_url;
+        } else {
+          // No checkout URL — show success screen directly (trial)
+          document.getElementById('formSection').style.display = 'none';
+          const successSection = document.getElementById('successSection');
+          successSection.style.display = 'block';
+          document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
+          document.getElementById('successEmail').textContent = email;
+          document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+        }
+      } catch (err) {
+        // Checkout failed — show success screen directly
+        document.getElementById('formSection').style.display = 'none';
+        const successSection = document.getElementById('successSection');
+        successSection.style.display = 'block';
+        document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
+        document.getElementById('successEmail').textContent = email;
+        document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+      }
 
     } catch (err) {
       document.getElementById('errorMsg').textContent = err.message;
