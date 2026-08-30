@@ -717,4 +717,34 @@ function handleSignup() {
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
 </script>
 </body>
+<!-- Paddle.js -->
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js"></script>
+<script>
+  // Initialize Paddle
+  Paddle.Initialize({
+    token: "test_8b43dca45c2e1822afc549be439",
+    environment: "sandbox",
+  });
+
+  // Check if redirected from checkout
+  const urlParams = new URLSearchParams(window.location.search);
+  const ptxn = urlParams.get("_ptxn");
+  const checkoutStatus = urlParams.get("checkout");
+  const tenant = urlParams.get("tenant");
+
+  if (ptxn) {
+    // Open Paddle checkout with transaction ID
+    Paddle.Checkout.open({
+      transactionId: ptxn,
+    });
+  }
+
+  if (checkoutStatus === "success" && tenant) {
+    // Payment completed — show success message
+    setTimeout(() => {
+      alert(`Payment successful! Your ${tenant}.exodafy.com dashboard is ready.`);
+      window.location.href = `https://${tenant}.exodafy.com`;
+    }, 1000);
+  }
+</script>
 </html>
