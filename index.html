@@ -632,6 +632,25 @@
     <div class="fade-in" style="text-align:center">
       <div class="section-tag">Pricing</div>
       <h2 class="section-title">Simple, honest pricing.</h2>
+      
+      <!-- Billing Toggle -->
+      <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin:1.5rem 0;">
+        <span id="monthlyLabel" style="font-size:0.95rem;font-weight:600;color:#7c3aed;">Monthly</span>
+        <div id="billingToggle" onclick="toggleBilling()"
+          style="width:52px;height:28px;background:#e5e0fa;border-radius:999px;
+                 cursor:pointer;position:relative;transition:background 0.2s;">
+          <div id="toggleThumb"
+            style="width:22px;height:22px;background:#7c3aed;border-radius:50%;
+                   position:absolute;top:3px;left:3px;transition:left 0.2s;">
+          </div>
+        </div>
+        <span id="yearlyLabel" style="font-size:0.95rem;font-weight:600;color:#94a3b8;">
+          Yearly
+          <span style="background:#dcfce7;color:#16a34a;font-size:0.72rem;
+                       font-weight:700;padding:0.15rem 0.5rem;border-radius:999px;
+                       margin-left:0.4rem;">Save 17%</span>
+        </span>
+      </div>
       <p class="section-sub" style="margin:0 auto 0.5rem">Start free. Scale when you're ready. No surprises.</p>
     </div>
     <div class="pricing-grid" id="pricingGrid">
@@ -732,6 +751,73 @@ function handleSignup() {
     window.location.href = `/register.html?slug=${encodeURIComponent(slug)}`;
 }
 
+  let allPlans = [];
+  let isYearly = false;
+
+  function toggleBilling() {
+    isYearly = !isYearly;
+    const thumb = document.getElementById('toggleThumb');
+    const toggle = document.getElementById('billingToggle');
+    const monthlyLabel = document.getElementById('monthlyLabel');
+    const yearlyLabel = document.getElementById('yearlyLabel');
+
+    if (isYearly) {
+      thumb.style.left = '27px';
+      toggle.style.background = '#7c3aed';
+      monthlyLabel.style.color = '#94a3b8';
+      yearlyLabel.style.color = '#7c3aed';
+    } else {
+      thumb.style.left = '3px';
+      toggle.style.background = '#e5e0fa';
+      monthlyLabel.style.color = '#7c3aed';
+      yearlyLabel.style.color = '#94a3b8';
+    }
+    renderPlans();
+  }
+
+  function renderPlans() {
+    const grid = document.getElementById('pricingGrid');
+    if (!grid || allPlans.length === 0) return;
+
+    const filtered = allPlans.filter(p =>
+      p.slug !== 'trial' &&
+      p.is_active &&
+      (isYearly
+        ? p.billing_period === 'yearly'
+        : p.billing_period === 'monthly')
+    );
+
+    const POPULAR_SLUG = isYearly ? 'professional-yearly' : 'professional';
+
+    grid.innerHTML = filtered.map(plan => {
+      const isPopular = plan.slug === POPULAR_SLUG;
+      const features = (plan.features || []).map(f => `<li>${f}</li>`).join('');
+      const maxEmp = plan.max_employees >= 999999 ? 'Unlimited' : `Up to ${plan.max_employees}`;
+      const priceDisplay = isYearly
+        ? `$${plan.price}<span>/mo</span> <small style="display:block;font-size:0.75rem;color:#94a3b8;">billed $${plan.yearly_price}/year</small>`
+        : `$${plan.price}<span>/month</span>`;
+
+      return `
+        <div class="price-card fade-in ${isPopular ? 'featured' : ''}">
+          ${isPopular ? '<span class="price-badge">MOST POPULAR</span>' : ''}
+          <div class="price-plan">${plan.name}</div>
+          <div class="price-amount">${priceDisplay}</div>
+          <p class="price-desc">${plan.description || ''}</p>
+          <ul class="price-features">
+            <li>${maxEmp} employees</li>
+            ${features}
+          </ul>
+          ${plan.slug.includes('enterprise')
+            ? `<a href="mailto:sales@exodafy.com" class="btn-plan btn btn-ghost">Contact sales</a>`
+            : `<a href="/register.html?plan=${plan.slug}" class="btn-plan btn ${isPopular ? 'btn-primary' : 'btn-ghost'}">Start free trial</a>`
+          }
+        </div>
+      `;
+    }).join('');
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+  }
+
   // Load plans from backend
   async function loadPlans() {
     try {
@@ -745,40 +831,10 @@ function handleSignup() {
       const plans = (data.plans || []).filter(p => p.is_active && p.slug !== 'trial');
 
       if (plans.length === 0) return;
-
-      const grid = document.getElementById('pricingGrid');
-      if (!grid) return;
-
-      const POPULAR_SLUG = 'professional';
-
-      grid.innerHTML = plans.map(plan => {
-        const isPopular = plan.slug === POPULAR_SLUG;
-        const features = (plan.features || []).map(f => `<li>${f}</li>`).join('');
-        const maxEmp = plan.max_employees >= 999999 ? 'Unlimited' : `Up to ${plan.max_employees}`;
-
-        return `
-          <div class="price-card fade-in ${isPopular ? 'featured' : ''}">
-            ${isPopular ? '<span class="price-badge">MOST POPULAR</span>' : ''}
-            <div class="price-plan">${plan.name}</div>
-            <div class="price-amount">$${plan.price}<span>/month</span></div>
-            <p class="price-desc">${plan.description || ''}</p>
-            <ul class="price-features">
-              <li>${maxEmp} employees</li>
-              ${features}
-            </ul>
-            ${plan.slug === 'enterprise'
-              ? `<a href="mailto:sales@exodafy.com" class="btn-plan btn btn-ghost">Contact sales</a>`
-              : `<a href="/register.html?plan=${plan.slug}" class="btn-plan btn ${isPopular ? 'btn-primary' : 'btn-ghost'}">Start free trial</a>`
-            }
-          </div>
-        `;
-      }).join('');
-
-      // Re-observe for animations
-      document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+      allPlans = plans;
+      renderPlans();
 
     } catch (e) {
-      // Keep static pricing if API fails
       console.log('Using static pricing');
     }
   }
