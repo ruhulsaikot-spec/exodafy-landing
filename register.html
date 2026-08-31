@@ -625,7 +625,10 @@
   async function loadRegisterPlans() {
     try {
       const res = await fetch(`${API_BASE}/super-admin/plans`, {
-        headers: { 'X-Super-Admin-Key': 'exodafy-super-admin-2026' }
+        headers: { 
+          'X-Super-Admin-Key': 'exodafy-super-admin-2026',
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       const data = await res.json();
       const plans = (data.plans || []).filter(p => p.is_active && p.slug !== 'trial');

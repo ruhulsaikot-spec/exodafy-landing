@@ -736,7 +736,10 @@ function handleSignup() {
   async function loadPlans() {
     try {
       const res = await fetch('https://saint-going-dinghy.ngrok-free.dev/api/super-admin/plans', {
-        headers: { 'X-Super-Admin-Key': 'exodafy-super-admin-2026' }
+        headers: { 
+          'X-Super-Admin-Key': 'exodafy-super-admin-2026',
+          'ngrok-skip-browser-warning': 'true'
+        }
       });
       const data = await res.json();
       const plans = (data.plans || []).filter(p => p.is_active && p.slug !== 'trial');
