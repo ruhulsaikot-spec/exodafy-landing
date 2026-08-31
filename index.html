@@ -735,7 +735,7 @@ function handleSignup() {
   // Load plans from backend
   async function loadPlans() {
     try {
-      const res = await fetch('http://localhost:8000/api/super-admin/plans', {
+      const res = await fetch('https://saint-going-dinghy.ngrok-free.dev/api/super-admin/plans', {
         headers: { 'X-Super-Admin-Key': 'exodafy-super-admin-2026' }
       });
       const data = await res.json();
