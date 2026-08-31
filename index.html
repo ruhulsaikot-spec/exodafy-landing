@@ -794,7 +794,7 @@ function handleSignup() {
       const features = (plan.features || []).map(f => `<li>${f}</li>`).join('');
       const maxEmp = plan.max_employees >= 999999 ? 'Unlimited' : `Up to ${plan.max_employees}`;
       const priceDisplay = isYearly
-        ? `$${plan.price}<span>/mo</span> <small style="display:block;font-size:0.82rem;color:#16a34a;font-weight:600;">billed $${plan.yearly_price}/year</small>`
+        ? `$${plan.price}<span>/mo</span><br/><small style="display:block;font-size:0.78rem;color:#16a34a;font-weight:700;margin-top:4px;background:#f0fdf4;padding:2px 8px;border-radius:4px;">✓ billed $${plan.yearly_price}/year</small>`
         : `$${plan.price}<span>/month</span>`;
 
       return `
