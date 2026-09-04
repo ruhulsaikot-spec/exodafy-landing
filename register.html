@@ -467,8 +467,33 @@
           <span class="plan-opt-name">Enterprise</span>
           <span class="plan-opt-price">$199/mo</span>
         </div>
+        <div class="plan-opt" onclick="selectPlan(this, 'professional-per-user')">
+          <span class="plan-opt-name">Per User</span>
+          <span class="plan-opt-price">$7/user</span>
+        </div>
       </div>
       <input type="hidden" id="selectedPlan" value="starter" />
+
+      <!-- Per User employee count -->
+      <div id="perUserSection" style="display:none; margin-bottom:1rem; background:#f5f0ff; border:1.5px solid #e5e0fa; border-radius:12px; padding:1rem;">
+        <label class="form-label" for="employeeCount">
+          Number of Employees <span class="required">*</span>
+        </label>
+        <input
+          type="number"
+          id="employeeCount"
+          class="form-input"
+          min="1"
+          value="10"
+          oninput="updatePerUserPrice()"
+          style="text-align:center; font-size:1.1rem; font-weight:700; margin-bottom:0.5rem;"
+        />
+        <div style="text-align:center; margin-top:0.5rem;">
+          <span style="font-size:0.82rem; color:#64748b;">Total per month: </span>
+          <span id="perUserTotal" style="font-size:1.1rem; font-weight:800; color:#7c3aed;">$70</span>
+          <span style="font-size:0.78rem; color:#94a3b8; margin-left:0.25rem;" id="perUserBreakdown">(10 × $7)</span>
+        </div>
+      </div>
 
       <!-- Error banner -->
       <div class="error-banner" id="errorBanner">
@@ -679,6 +704,21 @@
     document.querySelectorAll('.plan-opt').forEach(p => p.classList.remove('active'));
     el.classList.add('active');
     selectedPlan = plan;
+    // Show/hide per-user section
+    const perUserSection = document.getElementById('perUserSection');
+    if (plan === 'professional-per-user') {
+      perUserSection.style.display = 'block';
+      updatePerUserPrice();
+    } else {
+      perUserSection.style.display = 'none';
+    }
+  }
+
+  function updatePerUserPrice() {
+    const count = parseInt(document.getElementById('employeeCount').value) || 1;
+    const total = count * 7;
+    document.getElementById('perUserTotal').textContent = `$${total.toLocaleString()}`;
+    document.getElementById('perUserBreakdown').textContent = `(${count} × $7)`;
   }
 
   // ── Slug validation (debounced) ──
@@ -848,12 +888,17 @@
 
       // Get checkout URL from backend
       try {
+        const employeeCount = plan === 'professional-per-user'
+          ? parseInt(document.getElementById('employeeCount').value) || 1
+          : 1;
+
         const checkoutRes = await fetch(`${API_BASE}/billing/checkout`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             tenant_slug: slug,
             plan: plan,
+            quantity: employeeCount,
           }),
         });
         const checkoutData = await checkoutRes.json();
