@@ -373,8 +373,8 @@
         document.getElementById('formSection').style.display = 'none';
         const successSection = document.getElementById('successSection');
         successSection.style.display = 'block';
-        document.getElementById('successUrl').textContent = `${tenant}.exodafy.com`;
-        document.getElementById('dashboardLink').href = `https://${tenant}.exodafy.com`;
+          document.getElementById('successUrl').textContent = getDashboardUrl(tenant);
+          document.getElementById('dashboardLink').href = getDashboardUrl(tenant);
       }
     }
   });
@@ -648,6 +648,13 @@
   // ── Config ──
   const API_BASE = 'https://saint-going-dinghy.ngrok-free.dev/api'; // Change to production URL
 
+    // Dev mode: use localhost subdomain instead of real domain
+  const IS_DEV = true; // Set to false before production deploy
+  const getDashboardUrl = (slug) => {
+    if (IS_DEV) return `http://${slug}.localhost:3000`;
+    return `https://${slug}.exodafy.com`;
+  };
+
   // ── Pre-fill slug from URL param ──
   const params = new URLSearchParams(window.location.search);
   const prefillSlug = params.get('slug');
@@ -919,18 +926,18 @@
           document.getElementById('formSection').style.display = 'none';
           const successSection = document.getElementById('successSection');
           successSection.style.display = 'block';
-          document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
+          document.getElementById('successUrl').textContent = getDashboardUrl(slug);
           document.getElementById('successEmail').textContent = email;
-          document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+          document.getElementById('dashboardLink').href = getDashboardUrl(slug);
         }
       } catch (err) {
         // Checkout failed — show success screen directly
         document.getElementById('formSection').style.display = 'none';
         const successSection = document.getElementById('successSection');
         successSection.style.display = 'block';
-        document.getElementById('successUrl').textContent = `${slug}.exodafy.com`;
-        document.getElementById('successEmail').textContent = email;
-        document.getElementById('dashboardLink').href = `https://${slug}.exodafy.com`;
+          document.getElementById('successUrl').textContent = getDashboardUrl(slug);
+          document.getElementById('successEmail').textContent = email;
+          document.getElementById('dashboardLink').href = getDashboardUrl(slug);
       }
 
     } catch (err) {
