@@ -652,10 +652,10 @@ const API_BASE = IS_PROD
   : 'https://saint-going-dinghy.ngrok-free.dev/api';
 
     // Dev mode: use localhost subdomain instead of real domain
-  const IS_DEV = true; // Set to false before production deploy
+  const IS_DEV = window.location.hostname === 'localhost' || window.location.hostname.includes('127.0.0.1');
   const getDashboardUrl = (slug) => {
     if (IS_DEV) return `http://${slug}.localhost:3000`;
-    return `https://${slug}.exodafy.com`;
+    return `https://expenora-frontend.vercel.app/?slug=${slug}`;
   };
 
   // ── Pre-fill slug from URL param ──
