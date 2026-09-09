@@ -893,8 +893,14 @@ const API_BASE = IS_PROD
         throw new Error(data.detail || 'Registration failed. Please try again.');
       }
 
-      // Success! Tenant created — now redirect to Paddle checkout
-      const plan = selectedPlan || 'starter';
+      // Success! Tenant created — redirect to dashboard directly (payment skipped)
+      document.getElementById('formSection').style.display = 'none';
+      const successSection = document.getElementById('successSection');
+      successSection.style.display = 'block';
+      document.getElementById('successUrl').textContent = getDashboardUrl(slug);
+      document.getElementById('successEmail').textContent = email;
+      document.getElementById('dashboardLink').href = getDashboardUrl(slug);
+      return;
 
       // Get checkout URL from backend
       try {
