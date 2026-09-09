@@ -646,7 +646,10 @@
 
 <script>
   // ── Config ──
-  const API_BASE = 'https://saint-going-dinghy.ngrok-free.dev/api'; // Change to production URL
+  const IS_PROD = window.location.hostname !== 'localhost' && !window.location.hostname.includes('127.0.0.1');
+const API_BASE = IS_PROD 
+  ? 'https://valiant-respect-production-67db.up.railway.app/api'
+  : 'https://saint-going-dinghy.ngrok-free.dev/api';
 
     // Dev mode: use localhost subdomain instead of real domain
   const IS_DEV = true; // Set to false before production deploy
